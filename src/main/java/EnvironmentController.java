@@ -4,7 +4,7 @@
  *
  * @author mconklin, @date 4/13/15 3:29 PM
  */
-public class Library {
+public class EnvironmentController {
     public boolean someLibraryMethod() {
         return true;
     }
