@@ -1,5 +1,6 @@
 import org.junit.Test;
 import vendor.hvac.FakeHVAC;
+import vendor.hvac.HVAC;
 
 import static org.junit.Assert.*;
 
@@ -16,5 +17,29 @@ public class EnvironmentControllerImplTest {
         EnvironmentControllerImpl controller = new EnvironmentControllerImpl(new FakeHVAC());
 
         assertTrue(controller.dormant());
+    }
+
+    @Test
+    public void TurnHeatOnIfTemperatureIsBelow65() {
+        FakeHVAC testHVAC = new FakeHVAC(63);
+        EnvironmentControllerImpl controller = new EnvironmentControllerImpl(testHVAC);
+        controller.tick();
+        assertTrue(testHVAC.heatCount == 1);
+        assertTrue(testHVAC.coolCount == 0);
+        assertTrue(testHVAC.fanCount == 1);
+        assertTrue(controller.isHeaterOn());
+        assertTrue(controller.isFanOn());
+    }
+
+    @Test
+    public void TurnCoolerOnIfTemperatureIsAbove75() {
+        FakeHVAC testHVAC = new FakeHVAC(77);
+        EnvironmentControllerImpl controller = new EnvironmentControllerImpl(testHVAC);
+        controller.tick();
+        assertTrue(testHVAC.heatCount == 0);
+        assertTrue(testHVAC.coolCount == 1);
+        assertTrue(testHVAC.fanCount == 1);
+        assertTrue(controller.isCoolerOn());
+        assertTrue(controller.isFanOn());
     }
 }

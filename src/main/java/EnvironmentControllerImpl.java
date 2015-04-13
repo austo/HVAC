@@ -8,10 +8,7 @@ import vendor.hvac.HVAC;
  */
 public class EnvironmentControllerImpl implements EnvironmentController {
 
-    @Override
-    public void tick() {
-
-    }
+    private static final int MIN_TEMP = 65, MAX_TEMP = 75;
 
     private boolean fanOn;
     private boolean heaterOn;
@@ -23,6 +20,32 @@ public class EnvironmentControllerImpl implements EnvironmentController {
         this.hvac = hvac;
     }
 
+    @Override
+    public void tick() {
+        int currentTemp = hvac.temp();
+        if (currentTemp < MIN_TEMP) {
+            switchHeat(true);
+            switchFan(true);
+        } else if (currentTemp > MAX_TEMP) {
+            switchCooler(true);
+            switchFan(true);
+        }
+    }
+
+    private void switchHeat(boolean state) {
+        hvac.heat(state);
+        heaterOn = state;
+    }
+
+    private void switchCooler(boolean state) {
+        hvac.cool(state);
+        coolerOn = state;
+    }
+
+    private void switchFan(boolean state) {
+        hvac.fan(state);
+        fanOn = state;
+    }
 
     public boolean isFanOn() {
         return fanOn;
