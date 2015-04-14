@@ -8,10 +8,11 @@ public class ArgumentParser {
 
     private Map<String, String> arguments = new HashMap<>();
 
-    public void parse(String[] args) {
+    public ArgumentParser parse(String[] args) {
         if (args.length > 0) {
             parseBoundArguments(args);
         }
+        return this;
     }
 
     public Map<String, String> getArguments() {

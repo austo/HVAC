@@ -12,6 +12,18 @@ repositories {
     jcenter()
 }
 
+// example: ./gradlew runProgram '-Pcliargs=-min,65,-max,75'
+task(runProgram, type: JavaExec) {
+
+    main = 'com.hvac.main.Runner'
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+
+    if (project.hasProperty('cliargs')) {
+        args(cliargs.split(','))
+    }
+}
+
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.7'
     testCompile 'junit:junit:4.11'
