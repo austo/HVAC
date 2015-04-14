@@ -10,9 +10,16 @@ public class EnvironmentControllerImpl implements EnvironmentController {
 
     private static final int MIN_TEMP = 65, MAX_TEMP = 75;
 
+    private static int TICK_MULTIPLIER = 1;
+    private static int COOLER_COUNTDOWN_START = 3;
+    private static int HEAT_COUNTDOWN_START = 5;
+
+
     private boolean fanOn;
     private boolean heaterOn;
     private boolean coolerOn;
+
+    private int tickCounter;
 
     private HVAC hvac;
 
@@ -22,22 +29,51 @@ public class EnvironmentControllerImpl implements EnvironmentController {
 
     @Override
     public void tick() {
+
+        if (this.tickCounter > 0) {
+            --tickCounter;
+            return;
+        }
+
+        // invariant: tickCounter == 0
         int currentTemp = hvac.temp();
         if (currentTemp < MIN_TEMP) {
-            switchHeat(true);
-            switchFan(true);
+            turnHeatOn();
         } else if (currentTemp > MAX_TEMP) {
-            switchCooler(true);
-            switchFan(true);
+            turnOnCooler();
         }
     }
 
+    private void turnHeatOn() {
+        if (coolerOn) {
+            switchCooler(false);
+            return;
+        }
+        switchHeat(true);
+    }
+
+    private void turnOnCooler() {
+        if (heaterOn) {
+            switchHeat(false);
+            return;
+        }
+        switchCooler(true);
+    }
+
     private void switchHeat(boolean state) {
+        if (!state) { // turning off
+            tickCounter = HEAT_COUNTDOWN_START;
+        }
+        switchFan(state);
         hvac.heat(state);
         heaterOn = state;
     }
 
     private void switchCooler(boolean state) {
+        if (!state) { // turning off
+            tickCounter = COOLER_COUNTDOWN_START;
+        }
+        switchFan(state);
         hvac.cool(state);
         coolerOn = state;
     }

@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 
 public class FakeHVAC implements HVAC {
 
-    public int heatCount, coolCount, fanCount;
+    public boolean heatOn, coolOn, fanOn;
 
     private int temp;
 
@@ -19,22 +19,26 @@ public class FakeHVAC implements HVAC {
 
     @Override
     public void heat(boolean on) {
-        this.heatCount++;
+        this.heatOn = on;
     }
 
     @Override
     public void cool(boolean on) {
-        this.coolCount++;
+        this.coolOn = on;
     }
 
     @Override
     public void fan(boolean on) {
-        this.fanCount++;
-
+        this.fanOn = on;
     }
 
     @Override
     public int temp() {
         return temp;
     }
+
+    public void setTemp(int temp) {
+        this.temp = temp;
+    }
+
 }
