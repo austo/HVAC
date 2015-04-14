@@ -8,12 +8,12 @@ import vendor.hvac.HVAC;
  */
 public class EnvironmentControllerImpl implements EnvironmentController {
 
-    private static final int MIN_TEMP = 65, MAX_TEMP = 75;
-
     private static int TICK_MULTIPLIER = 1;
     private static int COOLER_COUNTDOWN_START = 1;
     private static int HEAT_COUNTDOWN_START = 3;
 
+    int minTemp = 65;
+    int maxTemp = 75;
 
     private boolean fanOn;
     private boolean heaterOn;
@@ -37,9 +37,9 @@ public class EnvironmentControllerImpl implements EnvironmentController {
 
         // invariant: tickCounter == 0
         int currentTemp = hvac.temp();
-        if (currentTemp < MIN_TEMP) {
+        if (currentTemp < minTemp) {
             turnHeatOn();
-        } else if (currentTemp > MAX_TEMP) {
+        } else if (currentTemp > maxTemp) {
             turnOnCooler();
         } else {
             makeDormant();
@@ -83,6 +83,24 @@ public class EnvironmentControllerImpl implements EnvironmentController {
     private void switchFan(boolean state) {
         hvac.fan(state);
         fanOn = state;
+    }
+
+    public int getMinTemp() {
+        return minTemp;
+    }
+
+    @Override
+    public void setMinTemp(int minTemp) {
+        this.minTemp = minTemp;
+    }
+
+    public int getMaxTemp() {
+        return maxTemp;
+    }
+
+    @Override
+    public void setMaxTemp(int maxTemp) {
+        this.maxTemp = maxTemp;
     }
 
     public boolean isFanOn() {

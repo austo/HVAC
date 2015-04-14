@@ -113,4 +113,34 @@ public class EnvironmentControllerImplTest {
 
         assertTrue(controller.dormant());
     }
+
+    @Test
+    public void IfHeatIsSwitchedOffCoolShouldWait5TicksBeforeTurningOnWhenTempsAreNotDefaults() {
+        final int minTemp = 60;
+        final int maxTemp = 70;
+        FakeHVAC testHVAC = new FakeHVAC();
+        testHVAC.setTemp(minTemp - 1);
+        EnvironmentControllerImpl controller = new EnvironmentControllerImpl(testHVAC);
+        controller.minTemp = minTemp;
+        controller.maxTemp = maxTemp;
+
+        controller.tick();
+
+        assertFalse(testHVAC.coolOn);
+        assertTrue(testHVAC.heatOn);
+        assertTrue(testHVAC.fanOn);
+
+        testHVAC.setTemp(maxTemp + 1);
+
+        for(int i = 0; i < 4; i++) {
+            controller.tick();
+            assertTrue(controller.dormant());
+        }
+
+        controller.tick();
+
+        assertTrue(testHVAC.coolOn);
+        assertFalse(testHVAC.heatOn);
+        assertTrue(testHVAC.fanOn);
+    }
 }
