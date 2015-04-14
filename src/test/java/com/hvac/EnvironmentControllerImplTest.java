@@ -1,3 +1,5 @@
+package com.hvac;
+
 import org.junit.Test;
 import vendor.hvac.FakeHVAC;
 

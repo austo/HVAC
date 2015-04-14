@@ -6,7 +6,7 @@ apply plugin: 'idea'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-mainClassName = 'com.hvac.Runner'
+mainClassName = 'com.hvac.main.Runner'
 
 repositories {
     jcenter()
