@@ -11,8 +11,8 @@ public class EnvironmentControllerImpl implements EnvironmentController {
     private static final int MIN_TEMP = 65, MAX_TEMP = 75;
 
     private static int TICK_MULTIPLIER = 1;
-    private static int COOLER_COUNTDOWN_START = 3;
-    private static int HEAT_COUNTDOWN_START = 5;
+    private static int COOLER_COUNTDOWN_START = 2;
+    private static int HEAT_COUNTDOWN_START = 4;
 
 
     private boolean fanOn;

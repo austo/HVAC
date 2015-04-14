@@ -43,7 +43,7 @@ public class EnvironmentControllerImplTest {
     }
 
     @Test
-    public void IfCoolIsSwitchedOffHeatShouldWait5TicksBeforeTurningOn() {
+    public void IfCoolIsSwitchedOffHeatShouldWait3TicksBeforeTurningOn() {
         FakeHVAC testHVAC = new FakeHVAC(77);
         EnvironmentControllerImpl controller = new EnvironmentControllerImpl(testHVAC);
         controller.tick();
@@ -54,7 +54,7 @@ public class EnvironmentControllerImplTest {
 
         testHVAC.setTemp(63);
 
-        for(int i = 0; i < 4; i++) {
+        for(int i = 0; i < 2; i++) {
             controller.tick();
             assertTrue(controller.dormant());
         }
@@ -63,6 +63,31 @@ public class EnvironmentControllerImplTest {
 
         assertTrue(testHVAC.heatOn);
         assertFalse(testHVAC.coolOn);
+        assertTrue(testHVAC.fanOn);
+    }
+
+    @Test
+    public void IfHeatIsSwitchedOffCoolShouldWait5TicksBeforeTurningOn() {
+        FakeHVAC testHVAC = new FakeHVAC();
+        testHVAC.setTemp(64);
+        EnvironmentControllerImpl controller = new EnvironmentControllerImpl(testHVAC);
+        controller.tick();
+
+        assertFalse(testHVAC.coolOn);
+        assertTrue(testHVAC.heatOn);
+        assertTrue(testHVAC.fanOn);
+
+        testHVAC.setTemp(76);
+
+        for(int i = 0; i < 4; i++) {
+            controller.tick();
+            assertTrue(controller.dormant());
+        }
+
+        controller.tick();
+
+        assertTrue(testHVAC.coolOn);
+        assertFalse(testHVAC.heatOn);
         assertTrue(testHVAC.fanOn);
     }
 }
