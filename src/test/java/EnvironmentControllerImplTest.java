@@ -90,4 +90,27 @@ public class EnvironmentControllerImplTest {
         assertFalse(testHVAC.heatOn);
         assertTrue(testHVAC.fanOn);
     }
+
+    @Test
+    public void ShouldStayDormantIfTemperatureChangeIsWithinRange() {
+        FakeHVAC testHVAC = new FakeHVAC();
+        testHVAC.setTemp(64);
+        EnvironmentControllerImpl controller = new EnvironmentControllerImpl(testHVAC);
+        controller.tick();
+
+        assertFalse(testHVAC.coolOn);
+        assertTrue(testHVAC.heatOn);
+        assertTrue(testHVAC.fanOn);
+
+        testHVAC.setTemp(75);
+
+        for(int i = 0; i < 4; i++) {
+            controller.tick();
+            assertTrue(controller.dormant());
+        }
+
+        controller.tick();
+
+        assertTrue(controller.dormant());
+    }
 }

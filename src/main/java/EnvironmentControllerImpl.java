@@ -41,6 +41,8 @@ public class EnvironmentControllerImpl implements EnvironmentController {
             turnHeatOn();
         } else if (currentTemp > MAX_TEMP) {
             turnOnCooler();
+        } else {
+            makeDormant();
         }
     }
 
@@ -97,5 +99,11 @@ public class EnvironmentControllerImpl implements EnvironmentController {
 
     public boolean dormant() {
         return !fanOn && !heaterOn && !coolerOn;
+    }
+
+    private void makeDormant() {
+        this.fanOn = false;
+        this.heaterOn = false;
+        this.coolerOn = false;
     }
 }
