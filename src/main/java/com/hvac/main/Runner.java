@@ -2,6 +2,7 @@ package com.hvac.main;
 
 import com.hvac.EnvironmentController;
 import com.hvac.EnvironmentControllerImpl;
+import com.hvac.network.SocketWrapper;
 import vendor.hvac.HVAC;
 
 import java.util.Map;
@@ -9,6 +10,8 @@ import java.util.Map;
 public class Runner {
 
     ArgumentValidationState validationState;
+    EnvironmentController controller;
+    SocketWrapper socketWrapper;
 
     Runner() {
 
@@ -26,7 +29,7 @@ public class Runner {
 
         System.out.printf("Arguments are : %s\n", arguments);
 
-        EnvironmentController controller = new EnvironmentControllerImpl(new HVAC() {
+        this.controller = new EnvironmentControllerImpl(new HVAC() {
             @Override
             public void heat(boolean on) {
 
@@ -49,9 +52,19 @@ public class Runner {
         });
 
         if (validationState == ArgumentValidationState.PRESENT) {
-            controller.setMinTemp(Integer.parseInt(arguments.get("min")));
-            controller.setMaxTemp(Integer.parseInt(arguments.get("max")));
+            this.controller.setMinTemp(Integer.parseInt(arguments.get("min")));
+            this.controller.setMaxTemp(Integer.parseInt(arguments.get("max")));
         }
+        runServer();
+    }
+
+    void runServer() {
+        this.socketWrapper = new SocketWrapper(5000);
+        new Thread() {
+            public void run() {
+                socketWrapper.start(new TemperatureRequestHandler(controller));
+            }
+        }.start();
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

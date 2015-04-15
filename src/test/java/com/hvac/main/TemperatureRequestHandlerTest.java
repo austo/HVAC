@@ -22,7 +22,7 @@ public class TemperatureRequestHandlerTest {
     }
 
     @Test
-    public void ShouldReturnPresentIfInputIsValid() {
+    public void ShouldReturnUpdateResponseIfInputIsValid() {
         EnvironmentControllerSpy spy = new EnvironmentControllerSpy();
         InputHandler handler = new TemperatureRequestHandler(spy);
 

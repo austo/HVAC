@@ -18,16 +18,20 @@ public class SocketWrapper implements java.lang.AutoCloseable {
     public void start(InputHandler handler) {
         try {
             serverSocket = new ServerSocket(this.port);
-            socket = serverSocket.accept();
 
-            // read input
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String input = in.readLine();
+            while (true) {
+                socket = serverSocket.accept();
 
-            // write output
-            PrintWriter out = new PrintWriter(socket.getOutputStream());
-            out.println(handler.handle(input));
-            out.flush();
+                // read input
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                String input = in.readLine();
+
+                // write output
+                PrintWriter out = new PrintWriter(socket.getOutputStream());
+                out.println(handler.handle(input));
+                out.flush();
+
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
