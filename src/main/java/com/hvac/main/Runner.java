@@ -17,6 +17,10 @@ public class Runner {
     SocketWrapper socketWrapper;
     final Object mutex = new Object();
 
+    public static void main(String[] args) {
+        new Runner().run(args);
+    }
+
     public void run(String[] args) {
         Map<String, String> arguments = new ArgumentParser().parse(args).getArguments();
 
@@ -42,10 +46,24 @@ public class Runner {
         synchronized (mutex) {
             try {
                 mutex.wait();
-            } catch (InterruptedException e) {
+                System.out.println("server exited");
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    ServerThread runServer() {
+        final ServerThread serverThread = new ServerThread(this.socketWrapper, this.controller, this.mutex);
+        synchronized (mutex) {
+            new Thread(serverThread).start();
+        }
+        return serverThread;
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    static ArgumentValidationState validate(Map<String, String> arguments) {
+        return ArgumentValidator.validate(arguments);
     }
 
     private void initializeController() {
@@ -97,23 +115,5 @@ public class Runner {
 
         this.controller.setMinTemp(min);
         this.controller.setMaxTemp(max);
-    }
-
-
-    ServerThread runServer() {
-        final ServerThread serverThread = new ServerThread(this.socketWrapper, this.controller, this.mutex);
-        synchronized (mutex) {
-            new Thread(serverThread).start();
-        }
-        return serverThread;
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    static ArgumentValidationState validate(Map<String, String> arguments) {
-        return ArgumentValidator.validate(arguments);
-    }
-
-    public static void main(String[] args) {
-        new Runner().run(args);
     }
 }

@@ -1,5 +1,6 @@
 package com.hvac.network;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.InputStreamReader;
@@ -15,26 +16,21 @@ public class SocketWrapper implements java.lang.AutoCloseable {
         this.port = port;
     }
 
-    public void start(InputHandler handler) {
-        try {
-            serverSocket = new ServerSocket(this.port);
+    public void start(InputHandler handler) throws IOException {
+        serverSocket = new ServerSocket(this.port);
 
-            while ((socket = serverSocket.accept()) != null ) {
+        while ((socket = serverSocket.accept()) != null) {
 
-                // read input
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                String input = in.readLine();
+            // read input
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String input = in.readLine();
 
-                // write output
-                PrintWriter out = new PrintWriter(socket.getOutputStream());
-                out.println(handler.handle(input));
-                out.flush();
-                socket.close();
+            // write output
+            PrintWriter out = new PrintWriter(socket.getOutputStream());
+            out.println(handler.handle(input));
+            out.flush();
+            socket.close();
 
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
