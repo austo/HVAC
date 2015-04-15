@@ -1,7 +1,6 @@
 package com.hvac.network;
 
 import com.hvac.EnvironmentControllerSpy;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ServerThreadTest {
@@ -12,12 +11,10 @@ public class ServerThreadTest {
         final Object mutex = new Object();
         final ServerThread serverThread = new ServerThread(
                 new SocketWrapper(badPort), new EnvironmentControllerSpy(), mutex);
-
         serverThread.run();
     }
 
     @Test
-    @Ignore
     public void ShouldBindToValidPort() {
         final int goodPort = 9998;
         final Object mutex = new Object();
@@ -25,13 +22,13 @@ public class ServerThreadTest {
         final ServerThread serverThread = new ServerThread(wrapper, new EnvironmentControllerSpy(), mutex);
 
         Thread server = new Thread(serverThread);
-        server.run();
+        server.start();
 
         try {
             Thread.sleep(2000);
             server.interrupt();
         } catch (InterruptedException ignored) {
-
+            System.out.println("caught interrupted exception");
         }
     }
 }
