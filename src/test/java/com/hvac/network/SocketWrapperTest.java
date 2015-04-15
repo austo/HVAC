@@ -2,6 +2,8 @@ package com.hvac.network;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
+
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
@@ -44,12 +46,16 @@ public class SocketWrapperTest {
     private void StartSocket(final SocketWrapper socket) {
         new Thread() {
             public void run() {
-                socket.start(new InputHandler() {
-                    @Override
-                    public String handle(String input) {
-                        return input;
-                    }
-                });
+                try {
+                    socket.start(new InputHandler() {
+                        @Override
+                        public String handle(String input) {
+                            return input;
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }.start();
     }

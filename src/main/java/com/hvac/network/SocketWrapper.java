@@ -37,7 +37,9 @@ public class SocketWrapper implements java.lang.AutoCloseable {
     public void close() {
         try {
             System.out.println("closing");
-            socket.close();
+            if (socket != null) {
+                socket.close();
+            }
             serverSocket.close();
         } catch (Exception e) {
             e.printStackTrace();
